@@ -39,6 +39,8 @@ except FileExistsError:
     print("All images gathered will be saved along with existing items in this folder")
 
 cap = cv2.VideoCapture(0)
+cap.set(3, 1920)
+cap.set(4, 1080)
 
 start = False
 count = 0

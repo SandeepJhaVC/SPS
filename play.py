@@ -41,6 +41,8 @@ def calculate_winner(move1, move2):
 model = load_model("rock-paper-scissors-model.h5")
 
 cap = cv2.VideoCapture(0)
+cap.set(3, 1920)
+cap.set(4, 1080)
 
 prev_move = None
 

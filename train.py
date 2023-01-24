@@ -13,7 +13,7 @@ IMG_SAVE_PATH = 'image_data'
 CLASS_MAP = {
     "rock": 0,
     "paper": 1,
-    "scissors": 2,
+    "scissor": 2,
     "none": 3
 }
 
