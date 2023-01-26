@@ -2,6 +2,20 @@ from keras.models import load_model
 import cv2
 import numpy as np
 from random import choice
+import pygame
+import time
+
+pygame.init()
+
+bgm = pygame.mixer.music.load("On-My-Way-Lofi-Study-Music.wav")
+
+lose = pygame.mixer.Sound("lose.wav")
+win = pygame.mixer.Sound("win.wav")
+tie = pygame.mixer.Sound("tie.wav")
+
+play = "yes"
+
+count = 0
 
 REV_CLASS_MAP = {
     0: "rock",
@@ -37,6 +51,28 @@ def calculate_winner(move1, move2):
         if move2 == "rock":
             return "Computer"
 
+"""def Sound(move1,move2):
+    if move1 == move2:
+        pass
+
+    if move1 == "rock":
+        if move2 == "scissors":
+            win.play()
+        if move2 == "paper":
+            lose.play
+
+    if move1 == "paper":
+        if move2 == "rock":
+            win.play()
+        if move2 == "scissors":
+            lose.play
+
+    if move1 == "scissors":
+        if move2 == "paper":
+            win.play()
+        if move2 == "rock":
+            lose.play"""
+
 
 model = load_model("rock-paper-scissors-model.h5")
 
@@ -46,6 +82,7 @@ cap.set(4, 1080)
 
 prev_move = None
 
+pygame.mixer.music.play(-1)
 while True:
     ret, frame = cap.read()
     if not ret:
@@ -55,6 +92,8 @@ while True:
     cv2.rectangle(frame, (100, 100), (500, 500), (255, 255, 255), 2)
     # rectangle for computer to play
     cv2.rectangle(frame, (800, 100), (1200, 500), (255, 255, 255), 2)
+
+    
 
     # extract the region of image within the user rectangle
     roi = frame[100:500, 100:500]
@@ -69,23 +108,106 @@ while True:
     # predict the winner (human vs computer)
     if prev_move != user_move_name:
         if user_move_name != "none":
-            computer_move_name = choice(['rock', 'paper', 'scissors'])
-            winner = calculate_winner(user_move_name, computer_move_name)
+            if play == "yes":
+                computer_move_name = choice(['rock', 'paper', 'scissors'])
+                #Sound(user_move_name,computer_move_name)
+                winner = calculate_winner(user_move_name, computer_move_name)
+
+                if user_move_name == "rock":
+                    play = "no"
+                    user = user_move_name
+                    comp = computer_move_name
+                    won = winner
+                    if computer_move_name == "scissors":
+                        win.play()
+                    if computer_move_name == "paper":
+                        lose.play()
+                    if computer_move_name == "rock":
+                        tie.play()    
+                        
+
+                if user_move_name == "scissors":
+                    play = "no"
+                    user = user_move_name
+                    comp = computer_move_name
+                    won = winner
+                    if computer_move_name == "paper":
+                        win.play()    
+                    if computer_move_name == "rock":
+                        lose.play()
+                    if computer_move_name == "scissors":
+                        tie.play()
+                    
+                if user_move_name == "paper":
+                    play = "no"
+                    user = user_move_name
+                    comp = computer_move_name
+                    won = winner
+                    if computer_move_name == "rock":
+                        win.play() 
+                    if computer_move_name == "scissors":
+                        lose.play()   
+                    if computer_move_name == "paper":
+                        tie.play()
+
+
+                """if user_move_name == "rock":
+                    if computer_move_name == "paper":
+                        pygame.mixer.Channel(0).play(pygame.mixer.Sound("lose.wav"))
+                        play = "no"
+                        user = user_move_name
+                        comp = computer_move_name
+                        won = winner
+
+                if user_move_name == "scissor":
+                    if computer_move_name == "rock":
+                        pygame.mixer.Channel(0).play(pygame.mixer.Sound("lose.wav"))
+                        play = "no"
+                        user = user_move_name
+                        comp = computer_move_name
+                        won = winner
+                    
+                if user_move_name == "paper":
+                    if computer_move_name == "scissor":
+                        pygame.mixer.Channel(0).play(pygame.mixer.Sound("lose.wav"))
+                        play = "no"
+                        user = user_move_name
+                        comp = computer_move_name
+                        won = winner        """
+            
         else:
             computer_move_name = "none"
             winner = "Waiting..."
+            play = "yes"
     prev_move = user_move_name
 
     # display the information
     font = cv2.FONT_HERSHEY_SIMPLEX
-    cv2.putText(frame, "Your Move: " + user_move_name,
-                (50, 50), font, 1.2, (255, 255, 255), 2, cv2.LINE_AA)
-    cv2.putText(frame, "Computer's Move: " + computer_move_name,
-                (750, 50), font, 1.2, (255, 255, 255), 2, cv2.LINE_AA)
-    cv2.putText(frame, "Winner: " + winner,
-                (400, 600), font, 2, (0, 0, 255), 4, cv2.LINE_AA)
+    if play == "yes":
+        cv2.putText(frame, "Your Move: " + user_move_name,
+                    (50, 50), font, 1.2, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.putText(frame, "Computer's Move: " + computer_move_name,
+                    (750, 50), font, 1.2, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.putText(frame, "Winner: " + winner,
+                    (400, 600), font, 2, (0, 0, 255), 4, cv2.LINE_AA)
+        
+    else:
+        cv2.putText(frame, "Your Move: " + user,
+                    (50, 50), font, 1.2, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.putText(frame, "Computer's Move: " + comp,
+                    (750, 50), font, 1.2, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.putText(frame, "remove your hand then play again",
+                    (100, 900), font, 2, (0, 0, 255), 4, cv2.LINE_AA)
+        cv2.putText(frame, "Winner: " + won,
+                    (400, 600), font, 2, (0, 0, 255), 4, cv2.LINE_AA)            
+
+        icon = cv2.imread(
+            "images/{}.png".format(comp))
+        icon = cv2.resize(icon, (400, 400))
+        frame[100:500, 800:1200] = icon
 
     if computer_move_name != "none":
+
         icon = cv2.imread(
             "images/{}.png".format(computer_move_name))
         icon = cv2.resize(icon, (400, 400))
