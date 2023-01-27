@@ -9,13 +9,14 @@ pygame.init()
 
 bgm = pygame.mixer.music.load("On-My-Way-Lofi-Study-Music.wav")
 
-lose = pygame.mixer.Sound("lose.wav")
-win = pygame.mixer.Sound("win.wav")
-tie = pygame.mixer.Sound("tie.wav")
+lose = pygame.mixer.Sound("h-sounds\huehue.wav")
+win = pygame.mixer.Sound("h-sounds\chee.wav")
+tie = pygame.mixer.Sound("h-sounds\gandaBaccha.wav")
 
 play = "yes"
 
-count = 0
+count1 = 0
+count2 = 0
 
 REV_CLASS_MAP = {
     0: "rock",
@@ -50,28 +51,6 @@ def calculate_winner(move1, move2):
             return "User"
         if move2 == "rock":
             return "Computer"
-
-"""def Sound(move1,move2):
-    if move1 == move2:
-        pass
-
-    if move1 == "rock":
-        if move2 == "scissors":
-            win.play()
-        if move2 == "paper":
-            lose.play
-
-    if move1 == "paper":
-        if move2 == "rock":
-            win.play()
-        if move2 == "scissors":
-            lose.play
-
-    if move1 == "scissors":
-        if move2 == "paper":
-            win.play()
-        if move2 == "rock":
-            lose.play"""
 
 
 model = load_model("rock-paper-scissors-model.h5")
@@ -110,9 +89,9 @@ while True:
         if user_move_name != "none":
             if play == "yes":
                 computer_move_name = choice(['rock', 'paper', 'scissors'])
-                #Sound(user_move_name,computer_move_name)
                 winner = calculate_winner(user_move_name, computer_move_name)
-
+                
+                #playing sounds
                 if user_move_name == "rock":
                     play = "no"
                     user = user_move_name
@@ -120,8 +99,10 @@ while True:
                     won = winner
                     if computer_move_name == "scissors":
                         win.play()
+                        count1 +=1
                     if computer_move_name == "paper":
                         lose.play()
+                        count2 += 1
                     if computer_move_name == "rock":
                         tie.play()    
                         
@@ -132,9 +113,11 @@ while True:
                     comp = computer_move_name
                     won = winner
                     if computer_move_name == "paper":
-                        win.play()    
+                        win.play()
+                        count1 += 1    
                     if computer_move_name == "rock":
                         lose.play()
+                        count2 += 1
                     if computer_move_name == "scissors":
                         tie.play()
                     
@@ -144,36 +127,13 @@ while True:
                     comp = computer_move_name
                     won = winner
                     if computer_move_name == "rock":
-                        win.play() 
+                        win.play()
+                        count1 += 1 
                     if computer_move_name == "scissors":
-                        lose.play()   
+                        lose.play()
+                        count2 += 1   
                     if computer_move_name == "paper":
                         tie.play()
-
-
-                """if user_move_name == "rock":
-                    if computer_move_name == "paper":
-                        pygame.mixer.Channel(0).play(pygame.mixer.Sound("lose.wav"))
-                        play = "no"
-                        user = user_move_name
-                        comp = computer_move_name
-                        won = winner
-
-                if user_move_name == "scissor":
-                    if computer_move_name == "rock":
-                        pygame.mixer.Channel(0).play(pygame.mixer.Sound("lose.wav"))
-                        play = "no"
-                        user = user_move_name
-                        comp = computer_move_name
-                        won = winner
-                    
-                if user_move_name == "paper":
-                    if computer_move_name == "scissor":
-                        pygame.mixer.Channel(0).play(pygame.mixer.Sound("lose.wav"))
-                        play = "no"
-                        user = user_move_name
-                        comp = computer_move_name
-                        won = winner        """
             
         else:
             computer_move_name = "none"
@@ -190,6 +150,10 @@ while True:
                     (750, 50), font, 1.2, (255, 255, 255), 2, cv2.LINE_AA)
         cv2.putText(frame, "Winner: " + winner,
                     (400, 600), font, 2, (0, 0, 255), 4, cv2.LINE_AA)
+        cv2.putText(frame, str(count1),
+                    (100, 800), font, 2, (0, 0, 255), 4, cv2.LINE_AA)
+        cv2.putText(frame, str(count2),
+                    (800, 800), font, 2, (0, 0, 255), 4, cv2.LINE_AA)
         
     else:
         cv2.putText(frame, "Your Move: " + user,
@@ -199,7 +163,11 @@ while True:
         cv2.putText(frame, "remove your hand then play again",
                     (100, 900), font, 2, (0, 0, 255), 4, cv2.LINE_AA)
         cv2.putText(frame, "Winner: " + won,
-                    (400, 600), font, 2, (0, 0, 255), 4, cv2.LINE_AA)            
+                    (400, 600), font, 2, (0, 0, 255), 4, cv2.LINE_AA)
+        cv2.putText(frame, str(count1),
+                    (100, 800), font, 2, (0, 0, 255), 4, cv2.LINE_AA)
+        cv2.putText(frame, str(count1),
+                    (800, 800), font, 2, (0, 0, 255), 4, cv2.LINE_AA)            
 
         icon = cv2.imread(
             "images/{}.png".format(comp))
