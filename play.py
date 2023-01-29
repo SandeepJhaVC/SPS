@@ -4,19 +4,46 @@ import numpy as np
 from random import choice
 import pygame
 import time
+import random
 
 pygame.init()
 
-bgm = pygame.mixer.music.load("On-My-Way-Lofi-Study-Music.wav")
+#
+#sounds
+#
+bgm = pygame.mixer.music.load("n-sounds\Bgm.wav")
+end = pygame.mixer.Sound("m-sounds\khatam.wav")
 
-lose = pygame.mixer.Sound("h-sounds\huehue.wav")
-win = pygame.mixer.Sound("h-sounds\chee.wav")
-tie = pygame.mixer.Sound("h-sounds\gandaBaccha.wav")
+tie = pygame.mixer.Sound("n-sounds\\tie.wav")
+
+start = pygame.mixer.Sound("m-sounds\ShurKarteH.wav")
+padh = pygame.mixer.Sound("m-sounds\Padhai.wav")
+
+#lose
+lose = pygame.mixer.Sound("n-sounds\lose.wav")
+abey = pygame.mixer.Sound("m-sounds\AbeySale.wav")
+
+#win
+win = pygame.mixer.Sound("n-sounds\win.wav")
+sabbas = pygame.mixer.Sound("m-sounds\ShabasBeta.wav")
+
+
 
 play = "yes"
 
 count1 = 0
 count2 = 0
+
+check = 0
+
+def startPlay():
+    num = random.randint(0,1)
+    if num == 0:
+        start.play()
+    if num == 1:
+        padh.play()
+
+startPlay()
 
 REV_CLASS_MAP = {
     0: "rock",
@@ -24,6 +51,21 @@ REV_CLASS_MAP = {
     2: "scissors",
     3: "none"
 }
+
+def losePlay():
+    num = random.randint(0,1)
+    if num == 0:
+        win.play()
+    if num == 1:
+        sabbas.play()
+
+def winPlay():
+    num = random.randint(0,1)
+    if num == 0:
+        lose.play()
+    if num == 1:
+        abey.play()
+
 
 
 def mapper(val):
@@ -88,7 +130,7 @@ while True:
     if prev_move != user_move_name:
         if user_move_name != "none":
             if play == "yes":
-                computer_move_name = choice(['rock', 'paper', 'scissors'])
+                computer_move_name = choice(['scissors','rock','paper'])
                 winner = calculate_winner(user_move_name, computer_move_name)
                 
                 #playing sounds
@@ -137,37 +179,61 @@ while True:
             
         else:
             computer_move_name = "none"
-            winner = "Waiting..."
+            winner = "none"
             play = "yes"
     prev_move = user_move_name
+
+    #text
+    def showText():
+        cv2.putText(frame, str(count1),
+                    (100, 800), font, 2, (0,255,255), 4, cv2.LINE_AA)
+        cv2.putText(frame, str(count2),
+                    (800, 800), font, 2, (127,255,0), 4, cv2.LINE_AA)
+        
+        #score
+        if count1 - count2 <=0:
+            cv2.putText(frame, "to win, you should have 5 points more than comp",
+                       (10, 700), font, 1.5, (13,13,13), 3, cv2.LINE_AA)
+        else:
+            if count1 != 0:
+                cv2.putText(frame, "+"+str(5 -(count1 - count2))+"to win",
+                        (10, 700), font, 1.5, (13,13,13), 3, cv2.LINE_AA)
+
+        #winner
+        if winner == "User":
+            cv2.putText(frame, "Winner: " + "User",
+                    (400, 600), font, 2, (0,255,255), 4, cv2.LINE_AA)
+        if winner == "Computer":
+            cv2.putText(frame, "Winner: " + "Computer",
+                    (400, 600), font, 2, (127,255,0), 4, cv2.LINE_AA)
+        if winner == "Tie":
+            cv2.putText(frame, "Winner: " + "Tie",
+                    (400, 600), font, 2, (255,64,64), 4, cv2.LINE_AA)
+        if winner == "none":
+            cv2.putText(frame, "Winner: " + "Waiting...",
+                    (400, 600), font, 2, (252,230,201), 4, cv2.LINE_AA)
+
 
     # display the information
     font = cv2.FONT_HERSHEY_SIMPLEX
     if play == "yes":
         cv2.putText(frame, "Your Move: " + user_move_name,
-                    (50, 50), font, 1.2, (255, 255, 255), 2, cv2.LINE_AA)
+                    (50, 50), font, 1.2, (0,255,255), 2, cv2.LINE_AA)
         cv2.putText(frame, "Computer's Move: " + computer_move_name,
-                    (750, 50), font, 1.2, (255, 255, 255), 2, cv2.LINE_AA)
-        cv2.putText(frame, "Winner: " + winner,
-                    (400, 600), font, 2, (0, 0, 255), 4, cv2.LINE_AA)
-        cv2.putText(frame, str(count1),
-                    (100, 800), font, 2, (0, 0, 255), 4, cv2.LINE_AA)
-        cv2.putText(frame, str(count2),
-                    (800, 800), font, 2, (0, 0, 255), 4, cv2.LINE_AA)
+                    (750, 50), font, 1.2, (127,255,0), 2, cv2.LINE_AA)
+        
+        showText()
         
     else:
+        showText()
         cv2.putText(frame, "Your Move: " + user,
-                    (50, 50), font, 1.2, (255, 255, 255), 2, cv2.LINE_AA)
+                    (50, 50), font, 1.2, (0,255,255), 2, cv2.LINE_AA)
         cv2.putText(frame, "Computer's Move: " + comp,
-                    (750, 50), font, 1.2, (255, 255, 255), 2, cv2.LINE_AA)
+                    (750, 50), font, 1.2, (127,255,0), 2, cv2.LINE_AA)
         cv2.putText(frame, "remove your hand then play again",
                     (100, 900), font, 2, (0, 0, 255), 4, cv2.LINE_AA)
-        cv2.putText(frame, "Winner: " + won,
-                    (400, 600), font, 2, (0, 0, 255), 4, cv2.LINE_AA)
-        cv2.putText(frame, str(count1),
-                    (100, 800), font, 2, (0, 0, 255), 4, cv2.LINE_AA)
-        cv2.putText(frame, str(count1),
-                    (800, 800), font, 2, (0, 0, 255), 4, cv2.LINE_AA)            
+        
+              
 
         icon = cv2.imread(
             "images/{}.png".format(comp))
@@ -182,6 +248,12 @@ while True:
         frame[100:500, 800:1200] = icon
 
     cv2.imshow("Rock Paper Scissors", frame)
+
+    if count1 == count2 + 5:
+        play="no"
+        end.play()
+        time.sleep(1.5)
+        break
 
     k = cv2.waitKey(10)
     if k == ord('q'):
